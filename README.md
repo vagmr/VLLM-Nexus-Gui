@@ -1,179 +1,178 @@
 # VLLM-Nexus-Gui
 
-## 程序名称
-vllm-nexus-gui-vram.py （这个版本时只用显存的模式，适合有多块大容量显存N卡的用户）
-vllm-nexus-gui-hybrid.py （这个版本带mem的是支持内存显存混合模式）
+English Documentation | [中文文档](README_CN.md)
 
-[English Documentation](README_EN.md) | 中文文档
+## Program Name
+vllm-nexus-gui-vram.py (This version uses only VRAM mode, suitable for users with multiple large-capacity VRAM NVIDIA GPUs)
+vllm-nexus-gui-hybrid.py (This version supports hybrid memory mode with both RAM and VRAM)
 
 
-VLLM是一个不错的平台，比Ollama强，速度快，但原生的Vllm不支持混合内存模型部署。
+VLLM is an excellent platform, better than Ollama, with faster speed, but native VLLM doesn't support hybrid memory model deployment.
 
-除了追加显卡，另外一个办法就是显存内存混合使用，也有人叫这是统一内存（Unified Memory Management），但实际上老黄对统一内存的硬件要求很高，一般的计算机达不到，想达到只能买新计算机最少DDR5内存以上。
+Besides adding more GPUs, another solution is to use a combination of VRAM and system RAM, sometimes called Unified Memory Management. However, NVIDIA's actual unified memory has high hardware requirements that most computers can't meet. To achieve true unified memory, you would need a new computer with at least DDR5 memory or higher.
 
-这个项目是基于DDR3内存开发，首先保证能跑得动，再讨论跑得快的问题。
+This project was developed on DDR3 memory, focusing first on making large models run, then addressing performance optimization.
 
-在此之前的内存显存混合模式跑大模型的软件有一些，各有特点。本软件的特点是：
-1、先把大模型完全加载到内存，再由内存加载到显存，这样做就避免了先加载到显存可能出现的报错。
-2、内存加载完毕后，运行时采用动态优化。
-3、图形化界面，省去了繁杂的命令行操作。
-4、支持跨平台 Windows、Ubuntu，都支持。
+There are several existing software solutions for running large models in hybrid memory mode, each with their own characteristics. The features of this software include:
+1. Loading the large model completely into system memory first, then from memory to VRAM, avoiding errors that might occur when loading directly to VRAM.
+2. Dynamic optimization during runtime after memory loading is complete.
+3. Graphical user interface, eliminating complex command-line operations.
+4. Cross-platform support for both Windows and Ubuntu.
 
-# VLLM-Nexus-Gui: VLLM 服务器管理器 (内存优化版)
+# VLLM-Nexus-Gui: VLLM Server Manager (Memory-Optimized Version)
 
-基于vLLM的高性能服务器管理系统（图形界面），专为大型语言模型优化，提供智能内存管理、多GPU支持与显存优化功能。特别适合在有限资源环境下部署大型模型。
-
-![VLLM 服务器管理器](https://example.com/path/to/screenshot.png)
+A high-performance server management system (with GUI) based on vLLM, optimized for large language models, providing intelligent memory management, multi-GPU support, and VRAM optimization. Especially suitable for deploying large models in resource-constrained environments.
 
 
 
-## 核心特性
 
-- 🚀 智能内存管理和CPU卸载功能
-- 💾 支持模型内存交换，突破显存限制
-- 🖥️ 多GPU张量并行计算（支持1-4卡配置）
-- 📊 实时GPU与系统内存监控
-- ⚙️ 智能参数推荐系统
-- 🔄 支持多种精度格式模型
-- 🛠️ 兼容不同版本VLLM命令行参数
+## Core Features
 
-## 内存优化亮点
+- 🚀 Intelligent memory management and CPU offloading
+- 💾 Model memory swapping to overcome VRAM limitations
+- 🖥️ Multi-GPU tensor parallel computing (supports 1-4 GPU configurations)
+- 📊 Real-time GPU and system memory monitoring
+- ⚙️ Intelligent parameter recommendation system
+- 🔄 Support for models in various precision formats
+- 🛠️ Compatible with different versions of VLLM command-line parameters
 
-- **内存交换技术**: 允许加载超出GPU显存的大型模型
-- **智能内存预分配**: 减少内存碎片，优化大模型加载
-- **系统资源实时监控**: 动态调整参数避免OOM错误
-- **CPU卸载机制**: 使用系统内存作为模型权重缓存
+## Memory Optimization Highlights
 
-## 界面指南
+- **Memory Swapping Technology**: Allows loading models larger than GPU VRAM
+- **Intelligent Memory Pre-allocation**: Reduces memory fragmentation, optimizes large model loading
+- **Real-time System Resource Monitoring**: Dynamically adjusts parameters to avoid OOM errors
+- **CPU Offloading Mechanism**: Uses system memory as a cache for model weights
 
-### 基本配置区域
-- **模型路径**: 选择本地模型文件夹
-- **IP地址/端口**: 设置服务器监听地址
-- **GPU数量**: 配置用于推理的GPU数量
-- **显存比例**: 控制每个GPU的内存使用率(0.0-1.0)
-- **最大Token数**: 设置批处理中的最大token数量
-- **最大序列长度**: 支持的最大上下文窗口大小
+## Interface Guide
 
-### KV缓存配置
-- **缓存精度**: 选择KV缓存的数值类型(float16/float32)
-- **块大小**: 定义每个缓存块的token数量
-- **最大块数**: 限制每个GPU分配的最大块数
-- **动态缩放**: 在不同批次之间启用缩放优化
+### Basic Configuration Area
+- **Model Path**: Select local model folder
+- **IP Address/Port**: Set server listening address
+- **GPU Count**: Configure number of GPUs for inference
+- **VRAM Ratio**: Control memory usage ratio for each GPU (0.0-1.0)
+- **Maximum Tokens**: Set maximum token count in batch processing
+- **Maximum Sequence Length**: Supported maximum context window size
 
-### 内存优化设置
-- **CPU卸载大小**: 设置卸载到CPU内存的模型数据大小(GB)
-- **内存交换空间**: 配置磁盘交换空间大小(GB)
-- **强制即时执行**: 避免CUDA图捕获导致的内存不足
-- **内存缓冲区预分配**: 预先分配内存减少碎片
+### KV Cache Configuration
+- **Cache Precision**: Select numerical type for KV cache (float16/float32)
+- **Block Size**: Define token count for each cache block
+- **Maximum Block Count**: Limit maximum blocks allocated per GPU
+- **Dynamic Scaling**: Enable scaling optimization between different batches
 
-## 内存和显存计算指南
+### Memory Optimization Settings
+- **CPU Offload Size**: Set size of model data offloaded to CPU memory (GB)
+- **Memory Swap Space**: Configure disk swap space size (GB)
+- **Force Immediate Execution**: Avoid memory shortages caused by CUDA graph capture
+- **Memory Buffer Pre-allocation**: Pre-allocate memory to reduce fragmentation
 
-### 模型大小估算
+## Memory and VRAM Calculation Guide
 
-| 模型参数量 | FP16大小 | INT8大小 | 最小GPU要求 | 最佳GPU配置 |
-|----------|---------|---------|-----------|------------|
-| 7B       | ~14GB   | ~7GB    | 16GB      | 24GB单卡   |
-| 13B      | ~26GB   | ~13GB   | 24GB×2    | 32GB×1     |
-| 32B      | ~64GB   | ~32GB   | 40GB×2    | 80GB×1     |
-| 70B      | ~140GB  | ~70GB   | 80GB×2    | 80GB×4     |
+### Model Size Estimation
 
-### 显存使用明细
+| Model Parameters | FP16 Size | INT8 Size | Minimum GPU Requirement | Optimal GPU Configuration |
+|-----------------|-----------|-----------|-------------------------|---------------------------|
+| 7B              | ~14GB     | ~7GB      | 16GB                    | 24GB single card          |
+| 13B             | ~26GB     | ~13GB     | 24GB×2                  | 32GB×1                    |
+| 32B             | ~64GB     | ~32GB     | 40GB×2                  | 80GB×1                    |
+| 70B             | ~140GB    | ~70GB     | 80GB×2                  | 80GB×4                    |
 
-对于一个32B模型(FP16)，显存分配大致如下：
+### VRAM Usage Breakdown
+
+For a 32B model (FP16), VRAM allocation is approximately:
 
 ```
-模型权重: 64GB
-KV缓存(2048上下文): ~2GB
-优化器状态: 不适用于推理
-梯度: 不适用于推理
-激活值: ~1GB
-CUDA内核: ~0.5GB
+Model weights: 64GB
+KV cache (2048 context): ~2GB
+Optimizer states: Not applicable for inference
+Gradients: Not applicable for inference
+Activation values: ~1GB
+CUDA kernels: ~0.5GB
 --------------------------
-总计: ~67.5GB
+Total: ~67.5GB
 ```
 
-### 内存交换和CPU卸载计算
+### Memory Swapping and CPU Offloading Calculation
 
-当使用内存交换功能时，您可以按照以下公式计算需要的资源:
+When using memory swapping, you can calculate required resources using this formula:
 
 ```
-必要GPU显存 = 模型大小 × (1 - CPU卸载比例) × (1 - 显存比率/100)
-必要系统内存 = 模型大小 × CPU卸载比例 + 缓冲区(~2GB)
-推荐交换空间 = 模型大小 × 0.2 (大约20%预留空间)
+Required GPU VRAM = Model Size × (1 - CPU Offload Ratio) × (1 - VRAM Ratio/100)
+Required System RAM = Model Size × CPU Offload Ratio + Buffer (~2GB)
+Recommended Swap Space = Model Size × 0.2 (approximately 20% reserved space)
 ```
 
-例如，加载70B模型(FP16)到RTX 4090(24GB):
+For example, loading a 70B model (FP16) on an RTX 4090 (24GB):
 ```
-CPU卸载: ~100GB
-GPU显存: ~21GB (模型处理部分)
-系统内存: ~120GB
-交换空间: ~28GB
+CPU Offload: ~100GB
+GPU VRAM: ~21GB (model processing portion)
+System RAM: ~120GB
+Swap Space: ~28GB
 ```
 
-## 快速使用指南
+## Quick Start Guide
 
 ```bash
-# 创建虚拟环境
+# Create virtual environment
 python -m venv vvvip
 vvvip\Scripts\activate
 
-#激活虚拟环境
+# Activate virtual environment (Linux/Mac)
 source vvvip/bin/activate
 
-# 安装依赖
+# Install dependencies
 pip install -r requirements.txt
 
 sudo apt-get install python3-tk
 
-# 启动程序
+# Launch the program
 python vllm-nexus-gui-hybrid.py
 ```
 
-## 推荐配置方案
+## Recommended Configuration Plans
 
-### 消费级显卡 (RTX 4090)
-- 最大模型: 13B (完整FP16)
-- 显存比例: 0.85
-- CPU卸载: 对于更大模型必须启用
-- 推荐设置: 使用界面"推荐设置"功能
+### Consumer GPUs (RTX 4090)
+- Maximum Model: 13B (full FP16)
+- VRAM Ratio: 0.85
+- CPU Offloading: Must be enabled for larger models
+- Recommended Settings: Use the "Recommended Settings" feature in the interface
 
-### 专业级显卡 (A100-80GB)
-- 最大模型: 70B (单卡FP16)
-- 显存比例: 0.9
-- 内存交换: 可选，用于超长上下文
-- KV缓存: float16 优先
+### Professional GPUs (A100-80GB)
+- Maximum Model: 70B (single card FP16)
+- VRAM Ratio: 0.9
+- Memory Swapping: Optional, for extra-long contexts
+- KV Cache: float16 preferred
 
-### 多卡配置 (RTX 4090 × 2)
-- 最大模型: 35B (张量并行)
-- GPU数量: 2
-- 显存比例: 0.8
-- KV缓存块大小: 16
+### Multi-GPU Configuration (RTX 4090 × 2)
+- Maximum Model: 35B (tensor parallel)
+- GPU Count: 2
+- VRAM Ratio: 0.8
+- KV Cache Block Size: 16
 
-## 高级使用技巧
+## Advanced Usage Tips
 
-1. **大模型加载**
-   - 启用"强制即时执行"避免CUDA图捕获阶段的内存不足
-   - 使用较低显存比例(0.75-0.85)预留系统空间
+1. **Large Model Loading**
+   - Enable "Force Immediate Execution" to avoid memory shortages during CUDA graph capture
+   - Use lower VRAM ratio (0.75-0.85) to reserve system space
 
-2. **内存优化**
-   - 对大型模型启用"内存缓冲区预分配"减少碎片
-   - 系统内存至少为模型大小的2倍
+2. **Memory Optimization**
+   - Enable "Memory Buffer Pre-allocation" for large models to reduce fragmentation
+   - System RAM should be at least twice the model size
 
-3. **性能平衡**
-   - 增大"块大小"可减少缓存管理开销
-   - 降低"最大序列长度"可减少每个请求的内存占用
+3. **Performance Balance**
+   - Increasing "Block Size" can reduce cache management overhead
+   - Reducing "Maximum Sequence Length" can decrease memory usage per request
 
-## 常见问题解决
+## Troubleshooting Common Issues
 
-| 问题 | 解决方案 |
-|------|---------|
-| CUDA OOM错误 | 1. 降低显存比例 2. 启用CPU卸载 3. 使用"推荐设置" |
-| 模型加载失败 | 检查模型路径是否包含完整权重文件 |
-| 服务器启动失败 | 尝试使用"备用启动方法"启动服务器 |
-| KV缓存溢出 | 减小"最大token数"或增加"最大块数" |
-| 系统内存不足 | 启用磁盘交换空间或减少CPU卸载比例 |
+| Problem | Solution |
+|---------|----------|
+| CUDA OOM Error | 1. Lower VRAM ratio 2. Enable CPU offloading 3. Use "Recommended Settings" |
+| Model Loading Failure | Check if model path contains complete weight files |
+| Server Startup Failure | Try using "Alternative Startup Method" to launch the server |
+| KV Cache Overflow | Reduce "Maximum Tokens" or increase "Maximum Block Count" |
+| Insufficient System Memory | Enable disk swap space or reduce CPU offloading ratio |
 
 
 ---
 
-*注意: 此版本为内存优化专版，专注于突破显存限制加载超大模型，界面上的参数设置直接影响模型加载和推理性能，请根据系统配置谨慎设置。*
+*Note: This version is specially optimized for memory, focusing on loading ultra-large models beyond VRAM limitations. Parameter settings in the interface directly affect model loading and inference performance, please configure carefully according to your system specifications.*
