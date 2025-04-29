@@ -1,0 +1,32 @@
+# 基础依赖 | Basic Dependencies
+torch>=2.2.0
+vllm>=0.3.3
+transformers>=4.38.1
+accelerate>=0.27.0
+tiktoken>=0.6.0
+
+# GUI依赖 | Gui Dependencies
+# tkinter
+
+# 系统依赖 | System Dependencies
+# 在安装前请先运行：| Before installation, please run:
+# sudo apt-get update
+# sudo apt-get install python3-tk
+
+numpy>=1.26.4
+sentencepiece>=0.1.99
+tqdm>=4.66.1
+fsspec>=2024.2.0
+typing-extensions>=4.9.0
+psutil>=5.9.8 
+
+requests>=2.31.0
+
+#sudo apt-get update
+#sudo apt-get install python3-dev build-essential
+#or  sudo apt install python3.10-dev
+
+# 系统监控 | System Monitoring
+GPUtil>=1.4.0
+
+# pip install bitsandbytes==0.41.1
